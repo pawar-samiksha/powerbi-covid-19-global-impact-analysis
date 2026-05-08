@@ -1,0 +1,28 @@
+table 'Vaccination Impact'
+	lineageTag: c1ead96a-47df-4724-8179-915a8bcce8f8
+
+	measure 'Vaccination Impact Value' = SELECTEDVALUE('Vaccination Impact'[Vaccination Impact])
+		lineageTag: 85e3d44d-eacf-4e10-acc1-2fbdad3b7ff9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Vaccination Impact'
+		dataType: double
+		formatString: 0
+		lineageTag: 7827db54-dff7-42c8-8b37-5fe947f97238
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Vaccination Impact' = calculated
+		mode: import
+		source = GENERATESERIES(0, 100, 5)
+
+	annotation PBI_Id = bb6d822e1501451cb739b0605f8d7249
+

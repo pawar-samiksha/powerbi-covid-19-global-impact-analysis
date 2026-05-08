@@ -1,0 +1,124 @@
+table covid_19_data
+	lineageTag: 5c4fe9c1-25ec-41e1-944d-13f89d4af1c2
+
+	measure 'Total Cases' = SUM(covid_19_data[Confirmed])
+		formatString: 0
+		lineageTag: d21cac7c-0ef3-4388-b272-7e3969d95038
+
+	measure 'Total Deaths' = SUM(covid_19_data[Deaths])
+		formatString: 0
+		lineageTag: be46c47f-120c-44d9-8782-4d9ec82644a9
+
+	measure 'Total Recoveries' = SUM(covid_19_data[Recovered])
+		formatString: 0
+		lineageTag: fe8bbd67-9e26-436d-8672-19db8eac6e61
+
+	measure 'Active Cases' = [Total Cases] - ([Total Deaths] + [Total Recoveries])
+		formatString: 0
+		lineageTag: 7bf802ca-46d0-4b4b-aded-24cb7933fddd
+
+	measure 'Case Fatality Rate' = DIVIDE([Total Deaths], [Total Cases], 0) * 100
+		lineageTag: bb1c12ed-bbe3-4165-869d-f4ec48605565
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Recovery Rate' = DIVIDE([Total Recoveries], [Total Cases], 0) * 100
+		lineageTag: 07522aa8-8cd3-4bf0-b532-a0eb02301ab1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column SNo
+		dataType: int64
+		formatString: 0
+		lineageTag: fc168d71-79e1-457e-9980-a8b5553f05be
+		summarizeBy: sum
+		sourceColumn: SNo
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObservationDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 90179057-857b-4175-8db2-01a34e6e80ca
+		summarizeBy: none
+		sourceColumn: ObservationDate
+
+		variation Variation
+			isDefault
+			relationship: 9c3d358b-d6ff-4fa6-bb47-d9441ba191be
+			defaultHierarchy: LocalDateTable_3f616733-4f54-49ef-9567-d1866a3dfaf2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Province/State
+		dataType: string
+		lineageTag: a2207323-40fd-451c-95d5-8bba902a52af
+		summarizeBy: none
+		sourceColumn: Province/State
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country/Region
+		dataType: string
+		lineageTag: da942548-476f-49cc-b8cc-33cb26e5977a
+		summarizeBy: none
+		sourceColumn: Country/Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Last Update'
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f9f05100-a59f-4892-bee7-6f0a69431db8
+		summarizeBy: none
+		sourceColumn: Last Update
+
+		variation Variation
+			isDefault
+			relationship: 0a878c8b-8c54-4e6a-b1ce-374a084bb57a
+			defaultHierarchy: LocalDateTable_d7701e87-8b98-4e1b-9971-ddb8bf23afc0.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Confirmed
+		dataType: int64
+		formatString: 0
+		lineageTag: 02b67f22-18bf-49ea-9f73-a8eb674673cb
+		summarizeBy: sum
+		sourceColumn: Confirmed
+
+		annotation SummarizationSetBy = Automatic
+
+	column Deaths
+		dataType: int64
+		formatString: 0
+		lineageTag: 86ea48f9-f210-46bb-81fd-e0d163c237c5
+		summarizeBy: sum
+		sourceColumn: Deaths
+
+		annotation SummarizationSetBy = Automatic
+
+	column Recovered
+		dataType: int64
+		formatString: 0
+		lineageTag: a50f9d0b-9891-4df8-9a27-f799fdf5530a
+		summarizeBy: sum
+		sourceColumn: Recovered
+
+		annotation SummarizationSetBy = Automatic
+
+	partition covid_19_data = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\Somnath\OneDrive\Documents\covid 19 power BI .xlsx"), null, true),
+				    covid_19_data_Sheet = Source{[Item="covid_19_data",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(covid_19_data_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"SNo", Int64.Type}, {"ObservationDate", type date}, {"Province/State", type text}, {"Country/Region", type text}, {"Last Update", type datetime}, {"Confirmed", Int64.Type}, {"Deaths", Int64.Type}, {"Recovered", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

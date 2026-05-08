@@ -1,0 +1,10 @@
+relationship 9c3d358b-d6ff-4fa6-bb47-d9441ba191be
+	joinOnDateBehavior: datePartOnly
+	fromColumn: covid_19_data.ObservationDate
+	toColumn: LocalDateTable_3f616733-4f54-49ef-9567-d1866a3dfaf2.Date
+
+relationship 0a878c8b-8c54-4e6a-b1ce-374a084bb57a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: covid_19_data.'Last Update'
+	toColumn: LocalDateTable_d7701e87-8b98-4e1b-9971-ddb8bf23afc0.Date
+
